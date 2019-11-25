@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+
+    <style>
+        a:link{text-decoration: none;color: #007fff}
+        a:hover{font-size: 150%}
+    </style>
+
+    <link th:href="@{layui/css/layui.css}" rel="stylesheet" />
+</head>
+
+<body>
+
+<div class="page" align="center">
+    <div class="container">
+        <div class="left">
+            <div class="login">Login</div>
+            <div class="eula">图书管理系统  用户登录<br>
+                <a href="admin" style="">管理员登陆</a>
+            </div>
+        </div>
+
+        <div class="form" align="center">
+            <form id="form1" action="/userLogin">
+                <div style=" margin:24px auto; width:984px; ">
+                    <label for="UserName">UserName</label>
+                    <input type="txet" id="UserName" name="userSno" lay-verify="required" lay-reqtext="用户名是必填项" placeholder="请输入"  class="layui-btn layui-btn-primary">
+                </div>
+                <div style=" margin:24px auto; width:984px; ">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" lay-verify="pass" placeholder="请输入密码" class="layui-btn layui-btn-primary">
+                </div>
+                <input type="submit" id="submit" value="Submit"  class="layui-btn layui-btn-normal">
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+
+</body>
+
+</html>

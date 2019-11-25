@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>图书管理系统</title>
+    <link th:href="@{layui/css/layui.css}" rel="stylesheet" />
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">图书管理系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+
+            <li class="layui-nav-item"><a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="">邮件管理</a>
+                    </dd>
+                    <dd>
+                        <a href="">消息管理</a>
+                    </dd>
+                    <dd>
+                        <a href="">授权管理</a>
+                    </dd>
+                </dl></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><b th:text="${session.admin.getAdminName()}"></b>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="">基本资料</a>
+                    </dd>
+                    <dd>
+                        <a href="">安全设置</a>
+                    </dd>
+                </dl></li>
+            <li class="layui-nav-item"><a href="/adminLogOut">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed"><a class=""
+                                                               href="javascript:;">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="showUsersPage?pageNum=1">查询用户</a>
+                        </dd>
+                        <dd>
+                            <a href="addUserPage">新增用户</a>
+                        </dd>
+                        <dd>
+                            <a href="BorrowingRecordPage?pageNum=1">借阅信息</a>
+                        </dd>
+
+                    </dl></li>
+                <li class="layui-nav-item"><a href="javascript:;">书籍管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="addBookPage">录入新书</a>
+                        </dd>
+                        <dd>
+                            <a href="addCategoryPage?pageNum=1">新建类别</a>
+                        </dd>
+                        <dd>
+                            <a href="showBookPage?pageNum=1">查询书籍</a>
+                        </dd>
+                    </dl></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <div class="layui-form" >
+                <table class="layui-table"  id="myForm">
+                    <colgroup>
+                        <col width="150">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th >学号</th>
+                        <th>用户名</th>
+                        <th>书名</th>
+                        <th>借书日期</th>
+                        <th>归还日期</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="BorrowingRecord:${page.getList()}">
+                        <td><label th:text="${BorrowingRecord.getUser().getUserSno()}"></label></td>
+                        <td><label th:text="${BorrowingRecord.getUser().getUserName()}"></label></td>
+                        <td><label th:text="${BorrowingRecord.getBook().getBookName()}"></label></td>
+                        <td><label th:text="${BorrowingRecord.getDateOfBorrowing()}"></label></td>
+                        <td><label th:text="${BorrowingRecord.getDateOfReturn()}"></label></td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="position:absolute;right: 110px ">
+            <label id="lab1" th:text="${page.getPageNum()}"></label>/<label id="lab2" th:text="${page.pages}" ></label>
+            <a id="prePage"  th:href="@{BorrowingRecordPage(pageNum=${page.getPrePage()})}" >上一页</a>
+            <a id="nextPage"  th:href="@{BorrowingRecordPage(pageNum=${page.getNextPage()})}" >下一页</a>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{layui/layui.all.js}"></script>
+<script th:src="@{jquery-3.3.1.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        //检查能否再点击上一页，下一页
+        var lab1=$("#lab1").html().trim();//获取当前页码
+        var lab2=$("#lab2").html().trim();//获取总页码
+        $("#prePage").click(function () {
+            if(lab1==1){
+                alert("已经是第一页了!");
+                return false;
+            }
+            return true;
+        });
+        $("#nextPage").click(function () {
+            if(lab1==lab2){
+                alert("已经是最后一页了!");
+                return false;
+            }
+            return true;
+        });
+    });
+</script>
+</body>
+</html>

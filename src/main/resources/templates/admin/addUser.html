@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>图书管理系统</title>
+    <link th:href="@{layui/css/layui.css}" rel="stylesheet" />
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">图书管理系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+
+            <li class="layui-nav-item"><a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="">邮件管理</a>
+                    </dd>
+                    <dd>
+                        <a href="">消息管理</a>
+                    </dd>
+                    <dd>
+                        <a href="">授权管理</a>
+                    </dd>
+                </dl></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><b th:text="${session.admin.getAdminName()}"></b>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="">基本资料</a>
+                    </dd>
+                    <dd>
+                        <a href="">安全设置</a>
+                    </dd>
+                </dl></li>
+            <li class="layui-nav-item"><a href="/adminLogOut">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed"><a class=""
+                                                               href="javascript:;">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="showUsersPage?pageNum=1">查询用户</a>
+                        </dd>
+                        <dd>
+                            <a href="addUserPage">新增用户</a>
+                        </dd>
+                        <dd>
+                            <a href="BorrowingRecordPage?pageNum=1">借阅信息</a>
+                        </dd>
+
+                    </dl></li>
+                <li class="layui-nav-item"><a href="javascript:;">书籍管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="addBookPage">录入新书</a>
+                        </dd>
+                        <dd>
+                            <a href="addCategoryPage?pageNum=1">新建类别</a>
+                        </dd>
+                        <dd>
+                            <a href="showBookPage?pageNum=1">查询书籍</a>
+                        </dd>
+                    </dl></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <form class="layui-form" action="addUser" >
+                <div class="layui-form-item">
+                    <label class="layui-form-label">ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userId"  autocomplete="off" placeholder="选填" class="layui-input" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userSno" lay-verify="required" lay-reqtext="学号是必填项" placeholder="请输入学号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="userPwd" lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="demo1" >立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script th:src="@{layui/layui.js}"></script>
+<script th:src="@{layui/layui.all.js}"></script>
+<script th:src="@{jquery-3.3.1.min.js}"></script>
+<script>
+    //表单验证
+    layui.use(['form', 'layedit'], function(){
+        var form = layui.form
+            ,layedit = layui.layedit
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+        //自定义验证规则
+        form.verify({
+            title: function(value){
+                if(value.length < 1){
+                    return '用户名为空';
+                }
+            }
+            ,pass: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ]
+            ,content: function(value){
+                layedit.sync(editIndex);
+            }
+        });
+
+        form.on('submit(demo1)', function(data){
+            $.ajax({
+                url: data.form.action,
+                type: 'post',
+                data: $(data.form).serialize()
+                ,
+                success: function (info) {
+                    alert("修改成功");
+                },
+                error : function(info) {
+                    alert("修改失败" +info.msg);
+
+                }
+            });
+            return false;
+        });
+    });
+
+
+
+</script>
+</body>
+</html>
